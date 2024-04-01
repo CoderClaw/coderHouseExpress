@@ -17,7 +17,17 @@ app.get('/products',async (req, res)=>{
 })
 app.get('/products/:pid',async (req, res)=>{
     const product = await productManager.getProductById(parseInt(req.params.pid));
-    res.send(product)
+
+    if(product){
+        return res.send(product)
+    }else{
+        return res.send({
+            error: "No se ha encontrado un producto con la id proporcionada"
+        })
+    }
+    
+    
+    
 })
 
 
