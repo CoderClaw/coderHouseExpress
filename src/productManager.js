@@ -23,7 +23,8 @@ export class ProductManager{
             } 
         }catch(err){
             console.log(err.message)
-        }
+            return err.message       
+        }       
         
     }
 
@@ -58,9 +59,15 @@ export class ProductManager{
         if(nullKeys.length>0 || invalidCode){
             console.error("Han ocurrido los siguientes errores: ")
 
-            if(nullKeys.length>0)console.error("Debe completar los siguientes campos con valores válidos: " + nullKeys)
+            if(nullKeys.length>0){
+                console.error("Debe completar los siguientes campos con valores válidos: " + nullKeys)
+                throw new Error("Debe completar los siguientes campos con valores válidos: " + nullKeys)
+            }
 
-            if(invalidCode)console.error("Se ha proporcionado un código de producto ya existente. El valor del código de producto debe ser único.")
+            if(invalidCode){
+                console.error("Se ha proporcionado un código de producto ya existente. El valor del código de producto debe ser único.")
+                throw new Error("Se ha proporcionado un código de producto ya existente. El valor del código de producto debe ser único.")
+            }
 
             throw new Error('') //lo deje de esta manera para que salgan los dos errores en caso de existir los dos y tirar un solo error
         }else{
@@ -107,18 +114,24 @@ export class ProductManager{
             
             const prod = await this.getProductById(id);
             
-            const updatedProd = {...prod,...obj}
+            if(prod){
+                const updatedProd = {...prod,...obj}
             
-            const productsList = await this.getProducts();
-
-            const index = productsList.findIndex((el)=>el.id == id)
-            
-            productsList.splice(index,1,updatedProd)
-            
-            await fs.promises.writeFile(this.path+this.jsonName,JSON.stringify(productsList));
-            console.log("Producto actualizado")
+                const productsList = await this.getProducts();
+    
+                const index = productsList.findIndex((el)=>el.id == id)
+                
+                productsList.splice(index,1,updatedProd)
+                
+                await fs.promises.writeFile(this.path+this.jsonName,JSON.stringify(productsList));
+                console.log("Producto actualizado")
+            }else{
+                throw new Error("No se ha encontrado un producto con la id proporcionada")
+            }
+           
         }catch(err){
             console.log(err)
+            return err.message
         }
         
     }
@@ -134,6 +147,7 @@ export class ProductManager{
             console.log("Producto eliminado")
         }catch(err){
             console.log(err)
+            return err.message
         }
         
     }

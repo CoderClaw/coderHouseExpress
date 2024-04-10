@@ -15,9 +15,9 @@ export class CartManager{
         try{
 
             if(!fs.existsSync(this.path+this.jsonName)){                
-                await fs.promises.writeFile(this.path+this.jsonName,"[]")
-                console.log("creado cart.json")                
-                await this.createCart()                
+                await fs.promises.writeFile(this.path+this.jsonName,"[]")              
+                await this.createCart()
+                            
             }else{
                 
                 const newCart = {
@@ -27,10 +27,13 @@ export class CartManager{
                 const cartList = await this.getCarts();
                 cartList.push(newCart);
                 await fs.promises.writeFile(this.path+this.jsonName,JSON.stringify(cartList,null,'\t'));
+                return "se ha creado un nuevo carrito de id: " + newCart.id
             } 
         }catch(err){
             console.log(err.message)
-        }        
+            return "ocurrio un error inesperado"
+        }
+        
     }
 
     async getCarts(){
@@ -74,15 +77,19 @@ export class CartManager{
             const prod = await productManager.getProductById(prodId);
             
             if(cart){
-                if(prod){         
-                    const cartProd = cart.products.filter(prod=>prod.product == prodId)
-                    console.log(cartProd)       
-                    if(cartProd.length ===0){
+                
+                if(prod){
+                      
+                    const cartProd = cart.products.filter(product=>product.product == prodId)
+                         
+                    if(cartProd.length === 0){
                         const newProd = {
-                            product: prodId,
+                            product: parseInt(prodId),
                             quantity:1
                         }
-                        cart.products.push(newProd)                        
+                        
+                        cart.products.push(newProd)
+                                             
                     }else{
                         const newProd = {...cartProd[0],quantity:cartProd[0].quantity+1}                        
                         
@@ -91,20 +98,22 @@ export class CartManager{
                         
                     }
                     
-                    const index = carts.findIndex((el)=>el.id === id)            
-                        carts.splice(index,1,cart)                    
-                        await fs.promises.writeFile(this.path+this.jsonName,JSON.stringify(carts));
-                        console.log("Carrito actualizado")
+                    const index = carts.findIndex((el)=>el.id == id)            
+                    carts.splice(index,1,cart)                                      
+                    await fs.promises.writeFile(this.path+this.jsonName,JSON.stringify(carts));
+                    console.log("Carrito actualizado")
                 }else{
                     throw new Error("Id de producto incorrecto")
                 }
             }else{
                 throw new Error("Id de carrito incorrecto")
             }
-
+            
+            return await this.getCartById(id);
             
         }catch(err){
             console.log(err)
+            return err.message;
         }
 
 

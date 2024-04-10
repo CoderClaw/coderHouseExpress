@@ -34,8 +34,9 @@ router.get('/:cid',async (req, res)=>{
 
 router.post('/',async (req, res)=>{
 
-    cartManager.createCart();
-    res.send()
+    const resp =await cartManager.createCart();
+    console.log(resp)
+    res.send(resp)
     
 })
 
@@ -43,8 +44,8 @@ router.post('/:cid/product/:pid',async (req, res)=>{
 
     const {cid, pid} = req.params;
 
-    await cartManager.addProdToCart(cid,pid);
-    res.send()
+    const resp = await cartManager.addProdToCart(cid,pid);
+    res.send(resp)
     
 })
 
