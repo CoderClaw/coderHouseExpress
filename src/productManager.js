@@ -9,14 +9,14 @@ export class ProductManager{
         this.path = path;
     }
 
-    async addProduct(title,description,price,thumbnail,code,stock){  
+    async addProduct(title,description,code,price,status=true,stock,category,thumbnails){  
         try{
 
             if(!fs.existsSync(this.path+this.jsonName)){                
                 await fs.promises.writeFile(this.path+this.jsonName,"[]")
-                this.addProduct(title,description,price,thumbnail,code,stock)                
+                await this.addProduct(title,description,code,price,status,stock,category,thumbnails)                
             }else{                
-                const prod = await this.verifyProd(title,description,price,thumbnail,code,stock);                
+                const prod = await this.verifyProd(title,description,code,price,status,stock,category,thumbnails);                
                 const productsList = await this.getProducts();
                 productsList.push(prod);
                 await fs.promises.writeFile(this.path+this.jsonName,JSON.stringify(productsList,null,'\t'));
@@ -27,20 +27,24 @@ export class ProductManager{
         
     }
 
-    async verifyProd(title,description,price,thumbnail,code,stock){
+    async verifyProd(title,description,code,price,status,stock,category,thumbnails){
         
         const prod = {
             id: await this.#nextId(),
             title,
             description,
-            price,
-            thumbnail,
             code,
-            stock
+            price,
+            status,            
+            stock,
+            category,
+            thumbnails
         }
-
+        console.log(prod)
         const nullKeys = Object.keys(prod).filter(key=>{
-           return prod[key] == null || prod[key] == ""
+            if(key!=="thumbnails"){
+                return prod[key] == null || prod[key] == ""
+            }
         })
 
         let invalidCode = false;
@@ -82,13 +86,14 @@ export class ProductManager{
     }
 
     async getProductById(id){
+        
         try{
             const productsList = await this.getProducts();
             
             if(!productsList) throw new Error("No se encontraron productos")
-            const prod = productsList.filter(item => item.id === id)
+            const prod = productsList.filter(item => item.id == id)
             
-            if(prod.length === 0) throw new Error("No se ha encontrado un producto con la id proporcionada")        
+            if(await prod.length === 0) throw new Error("No se ha encontrado un producto con la id proporcionada")        
             
             return prod[0];
         }catch(err){
@@ -99,16 +104,19 @@ export class ProductManager{
 
     async updateProduct(id,obj){
         try{
+            
             const prod = await this.getProductById(id);
+            
             const updatedProd = {...prod,...obj}
+            
             const productsList = await this.getProducts();
 
-            const index = productsList.findIndex((el)=>el.id === id)
+            const index = productsList.findIndex((el)=>el.id == id)
             
-             productsList.splice(index,1,updatedProd)
-             
-             await fs.promises.writeFile(this.path+this.jsonName,JSON.stringify(productsList));
-             console.log("Producto actualizado")
+            productsList.splice(index,1,updatedProd)
+            
+            await fs.promises.writeFile(this.path+this.jsonName,JSON.stringify(productsList));
+            console.log("Producto actualizado")
         }catch(err){
             console.log(err)
         }
@@ -118,7 +126,7 @@ export class ProductManager{
     async deleteProduct(id){
         try{
             const productsList = await this.getProducts();
-            const index = productsList.findIndex((el)=>el.id === id)
+            const index = productsList.findIndex((el)=>el.id == id)
             if(index === -1) throw new Error("No se ha encontrado un producto con la id proporcionada")           
             
              productsList.splice(index,1)             
@@ -157,11 +165,17 @@ const productManager = new ProductManager("../files");
 //TESTS
 
 // (async function(){
-//  await productManager.addProduct("prod1","description",100,"thumbnail","lsdkffdasdfsfdAD",20)
-//  await productManager.addProduct("prod2","description",200,"thumbnail","lsdkffdaagsgsadg",20)
-//  await productManager.addProduct("prod3","description",300,"thumbnail","lsdkffdasgadsgsfdAD",20)
-//  await productManager.addProduct("prod4","description",400,"thumbnail","lsdkffdsdgsdgsgdfweAD",20)
-//  await productManager.addProduct("prod5","description",500,"thumbnail","lsdkffdawerghhyhAD",20)
+//  await productManager.addProduct("prod1","description","0000001",100,true,20,"category",[])
+//  await productManager.addProduct("prod2","description","0000002",100,true,20,"category",[])
+//  await productManager.addProduct("prod3","description","0000003",100,true,20,"category",[])
+//  await productManager.addProduct("prod4","description","0000004",100,true,20,"category",[])
+//  await productManager.addProduct("prod5","description","0000005",100,true,20,"category",[])
+//  await productManager.addProduct("prod6","description","0000006",100,true,20,"category",[])
+//  await productManager.addProduct("prod7","description","0000007",100,true,20,"category",[])
+//  await productManager.addProduct("prod8","description","0000008",100,true,20,"category",[])
+//  await productManager.addProduct("prod9","description","0000009",100,true,20,"category",[])
+//  await productManager.addProduct("prod10","description","0000010",100,true,20,"category",[])
+
 
 // //  console.log(await productManager.getProducts())
 
