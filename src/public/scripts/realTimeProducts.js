@@ -13,6 +13,7 @@ socket.on("getProd",data=>{
     p.innerHTML = "prod id: " + item.id
     div.appendChild(h4)
     div.appendChild(p)
+    div.classList.add("prodCard")
     prodContainer.appendChild(div)
   })
 

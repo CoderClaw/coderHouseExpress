@@ -1,40 +1,43 @@
 <main>
     <div>
-        <h1>LISTA DE PRODUCTOS:</h1>
-        <div id="prodContainer">
+        
+         <div style="display:flex;">
+            <h1><a href="/">&lt;=</a></h1>
+            &nbsp;&nbsp;
+            <h2>LISTA DE PRODUCTOS:</h2>            
+        </div>
+        <div id="prodContainer" class="prodContainer">
 
         </div>
 
         <div>
             <form onsubmit="(ev)=>ev.preventDefault()">
                 <h3>Agregar Producto:</h3>
-                <div class="form-input">
+                <div class="addProd-form">
                     <input type="text" placeholder="Titulo" id="title" name="title" required />
+                    <input placeholder="Descripción" id="description" name="description" required/>
                     <input type="number" placeholder="Precio" id="price" name="price" required/>
                     <input type="number" placeholder="Código" id="code" name="code" required/>
-                    <input type="number" placeholder="Stock" id="stock" name="stock" required/>
-                    <input placeholder="Descripción" id="description" name="description" required/>
+                    <input type="number" placeholder="Stock" id="stock" name="stock" required/>                   
                     <input placeholder="Categoría" id="category" name="category" required/>
                 </div>
-                <div class="submit">
+                <div >
                     <button id="addSubmit">Agregar producto</button>
                 </div>
             </form>
 
             <form onsubmit="(ev)=>ev.preventDefault()">
                 <h3>Borrar Producto:</h3>
-                <div class="form-input">
+                <div class="deleteProd-form">
                     <input type="number" placeholder="Ingrese un Id" id="id" name="id" required />
                 </div>
-                <div class="submit" id="delSubmit">
+                <div id="delSubmit">
                     <button >Borrar producto</button>
                 </div>
 
             </form>
         </div>
-        <div>
-            <a href="/">Volver</a>
-        </div>
+       
     </div>
 
 </main>
