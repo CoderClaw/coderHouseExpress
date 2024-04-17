@@ -78,7 +78,8 @@ export class ProductManager{
     async getProducts(){
         try{
             if(!fs.existsSync(this.path+this.jsonName)){
-                throw new Error("no se encontraron productos");
+                console.log(!fs.existsSync(this.path+this.jsonName),this.path+this.jsonName)
+                throw new Error("no se encontraron productos en la busqueda general");
             }else{
                                
                 const products = await fs.promises.readFile(this.path+this.jsonName,'utf-8');
@@ -97,7 +98,7 @@ export class ProductManager{
         try{
             const productsList = await this.getProducts();
             
-            if(!productsList) throw new Error("No se encontraron productos")
+            if(!productsList) throw new Error("No se encontraron productos en la busqueda por id")
             const prod = productsList.filter(item => item.id == id)
             
             if(await prod.length === 0) throw new Error("No se ha encontrado un producto con la id proporcionada")        

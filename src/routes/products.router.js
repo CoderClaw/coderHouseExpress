@@ -5,7 +5,7 @@ const router = new Router();
 export default router;
 
 import { ProductManager } from '../productManager.js';
-const productManager = new ProductManager("../files")
+const productManager = new ProductManager("./files")
 
 
 router.get('/',async (req, res)=>{
@@ -33,11 +33,14 @@ router.get('/:pid',async (req, res)=>{
 })
 
 router.post('/',async (req, res)=>{
-    console.log(req.body)
+    
     const {title,description,code,price,status,stock,category,thumbnails} = req.body;
+
+    console.log(req.body)
 
     const response = await productManager.addProduct(title,description,code,price,status,stock,category,thumbnails)
     
+    console.log(response)
     if(response){
         res.send(response) 
     }else{

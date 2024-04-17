@@ -5,7 +5,7 @@ const router = new Router();
 export default router;
 
 import { CartManager } from '../cartManager.js';
-const cartManager = new CartManager("../files")
+const cartManager = new CartManager("./files")
 
 
 router.get('/',async (req, res)=>{

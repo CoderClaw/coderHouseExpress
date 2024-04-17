@@ -1,0 +1,42 @@
+<main>
+    <div>
+        <h1>LISTA DE PRODUCTOS:</h1>
+        <div id="prodContainer">
+
+        </div>
+
+        <div>
+            <form onsubmit="(ev)=>ev.preventDefault()">
+                <h3>Agregar Producto:</h3>
+                <div class="form-input">
+                    <input type="text" placeholder="Titulo" id="title" name="title" required />
+                    <input type="number" placeholder="Precio" id="price" name="price" required/>
+                    <input type="number" placeholder="Código" id="code" name="code" required/>
+                    <input type="number" placeholder="Stock" id="stock" name="stock" required/>
+                    <input placeholder="Descripción" id="description" name="description" required/>
+                    <input placeholder="Categoría" id="category" name="category" required/>
+                </div>
+                <div class="submit">
+                    <button id="addSubmit">Agregar producto</button>
+                </div>
+            </form>
+
+            <form onsubmit="(ev)=>ev.preventDefault()">
+                <h3>Borrar Producto:</h3>
+                <div class="form-input">
+                    <input type="number" placeholder="Ingrese un Id" id="id" name="id" required />
+                </div>
+                <div class="submit" id="delSubmit">
+                    <button >Borrar producto</button>
+                </div>
+
+            </form>
+        </div>
+        <div>
+            <a href="/">Volver</a>
+        </div>
+    </div>
+
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/scripts/realTimeProducts.js"></script>
