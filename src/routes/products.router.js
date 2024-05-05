@@ -21,8 +21,8 @@ router.get('/',async (req, res)=>{
     
 })
 router.get('/:pid',async (req, res)=>{
-    const product = await prodModel.findOne({_id: req.params.id});
-    
+    const product = await prodModel.findOne({_id: req.params.pid});
+    console.log(req.params.pid)
     if(product){
         return res.send(product)
     }else{
@@ -50,8 +50,8 @@ router.post('/',async (req, res)=>{
 router.put('/:pid',async (req, res)=>{
 
     const id = req.params.pid;
-    const {title,description,code,price,status,stock,category,thumbnails} = req.body;
-    const response = await prodModel.findOneAndUpdate({_id:req.params.id},{title,description,code,price,status:true,stock,category,thumbnails:"thumbnail"});
+    const obj = req.body;
+    const response = await prodModel.findOneAndUpdate({_id:req.params.pid},obj);
 
     if(response){
         res.send(response) 
