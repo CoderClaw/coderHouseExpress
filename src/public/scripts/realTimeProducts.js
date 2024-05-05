@@ -10,7 +10,7 @@ socket.on("getProd",data=>{
     let h4 = document.createElement("h4")
     let p = document.createElement("p")
     h4.innerHTML = "prod name: " + item.title
-    p.innerHTML = "prod id: " + item.id
+    p.innerHTML = "prod id: " + item._id
     div.appendChild(h4)
     div.appendChild(p)
     div.classList.add("prodCard")

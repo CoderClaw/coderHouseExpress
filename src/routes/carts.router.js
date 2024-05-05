@@ -1,16 +1,17 @@
 import { Router } from "express";
+import { cartModel } from "../dao/models/Cart.js";
 
 const router = new Router();
 
 export default router;
 
-import { CartManager } from '../cartManager.js';
-const cartManager = new CartManager("./files")
+// import { CartManager } from '../cartManager.js';
+// const cartManager = new CartManager("./files")
 
 
 router.get('/',async (req, res)=>{
 
-    const carts = await cartManager.getCarts();
+    const carts = await cartModel.find({})
     
     if(req.query.limit){
         res.send(carts.slice(0,parseInt(req.query.limit)))
@@ -20,7 +21,7 @@ router.get('/',async (req, res)=>{
     
 })
 router.get('/:cid',async (req, res)=>{
-    const cart = await cartManager.getCartById(parseInt(req.params.cid));
+    const cart = await cartModel.findOne({_id: req.params.cid})
 
     if(cart){
         return res.send(cart.products)
@@ -34,7 +35,7 @@ router.get('/:cid',async (req, res)=>{
 
 router.post('/',async (req, res)=>{
 
-    const resp =await cartManager.createCart();
+    const resp = await cartModel.create({});
     console.log(resp)
     res.send(resp)
     

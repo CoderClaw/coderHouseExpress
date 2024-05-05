@@ -5,6 +5,7 @@ import cartRouter from './routes/carts.router.js'
 import  viewsRouter  from './routes/view.router.js';
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io';
+import mongoose from 'mongoose'
 
 const app = express();
 
@@ -13,6 +14,14 @@ const httpServer = app.listen(8080, err =>{
 })
 
 const io = new Server(httpServer) 
+
+try{
+    mongoose.connect('mongodb+srv://coderhouseProject:noh5tzDPkuzeGwa8@cluster0.nqgyiqu.mongodb.net/ecommerce')
+    console.log("db conectada")
+}catch(error){
+    console.log(error)
+}
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))

@@ -1,16 +1,17 @@
 import { Router } from "express";
+import { prodModel } from "../dao/models/Prod.js";
 
 const router = new Router();
 
 export default router;
 
-import { ProductManager } from '../productManager.js';
-const productManager = new ProductManager("./files")
+// import { ProductManager } from '../productManager.js';
+// const productManager = new ProductManager("./files")
 
 
 router.get('/',async (req, res)=>{
 
-    const products = await productManager.getProducts();
+    const products = await prodModel.find({}).lean();
     
     if(req.query.limit){
         res.send(products.slice(0,parseInt(req.query.limit)))
@@ -20,8 +21,8 @@ router.get('/',async (req, res)=>{
     
 })
 router.get('/:pid',async (req, res)=>{
-    const product = await productManager.getProductById(parseInt(req.params.pid));
-    console.log(product)
+    const product = await prodModel.findOne({_id: req.params.id});
+    
     if(product){
         return res.send(product)
     }else{
@@ -36,30 +37,26 @@ router.post('/',async (req, res)=>{
     
     const {title,description,code,price,status,stock,category,thumbnails} = req.body;
 
-    console.log(req.body)
+    const response = await prodModel.create({title,description,code,price,status:true,stock,category,thumbnails:"thumbnail"});
 
-    const response = await productManager.addProduct(title,description,code,price,status,stock,category,thumbnails)
-    
-    console.log(response)
     if(response){
-        res.send(response) 
+        res.status(200).send({staus: "success",payload: response}) 
     }else{
-        const products = await productManager.getProducts();
-        res.send(products) 
+        res.status(401).send({staus: "error", payload: response}) 
     }
-       
+     
 })
 
 router.put('/:pid',async (req, res)=>{
 
     const id = req.params.pid;
-    const obj = req.body;
-    const response = await productManager.updateProduct(id,obj)
+    const {title,description,code,price,status,stock,category,thumbnails} = req.body;
+    const response = await prodModel.findOneAndUpdate({_id:req.params.id},{title,description,code,price,status:true,stock,category,thumbnails:"thumbnail"});
 
     if(response){
         res.send(response) 
     }else{
-        const products = await productManager.getProducts();
+        const products = await prodModel.find({});
         res.send(products) 
     }
     
@@ -68,11 +65,11 @@ router.put('/:pid',async (req, res)=>{
 router.delete('/:pid',async (req, res)=>{
 
     const pid = req.params.pid;
-    const response = await productManager.deleteProduct(pid);
+    const response = await prodModel.deleteOne({_id:pid});
     if(response){
         res.send(response) 
     }else{
-        const products = await productManager.getProducts();
+        const products = await prodModel.find({});
         res.send(products) 
     }
     
