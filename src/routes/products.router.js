@@ -20,13 +20,33 @@ router.get('/',async (req, res)=>{
             products = await prodModel.find().sort({price: 1});
         }else{
             products = await prodModel.find().sort({price: -1});
-        }
-        products = await prodModel.find().limit(2);
+        }        
+    }else if(req.query.page){
+        products = await prodModel.paginate({},{limit:5,page:req.query.page});
+    }else if(req.query.category){
+        products = await prodModel.aggregate([
+           {$match: {category:req.query.category}}
+        ])
+    }else if(req.query.status){
+        products = await prodModel.aggregate([
+           {$match: {status:req.query.status}}
+        ])
     }else{
-        products = await prodModel.find({}).lean();
-       
+        products = await prodModel.paginate({},{limit:5,page:1});       
     }
-    res.send(products)
+    
+    res.send({
+        status: "success",
+        payload: products.docs,
+        totalPages:products.totalDocs,
+        prevPage: products.hasPrevPage ? products.page-1 : null,
+        nextPage: products.hasNextPage ? products.page+1 : null ,
+        page:products.page,
+        hasPrevPage:products.hasPrevPage,
+        hasNextPage:products.hasNextPage,
+        prevLink:products.hasPrevPage ? "http://localhost:8080/api/products?page=" + (products.page-1) : null ,
+        nextLink:products.hasNextPage ? "http://localhost:8080/api/products?page=" + (products.page+1) : null ,
+    })
 })
 router.get('/:pid',async (req, res)=>{
     const product = await prodModel.findOne({_id: req.params.pid});
@@ -42,7 +62,7 @@ router.get('/:pid',async (req, res)=>{
 })
 
 router.post('/',async (req, res)=>{
-    
+
     const {title,description,code,price,status,stock,category,thumbnails} = req.body;
 
     const response = await prodModel.create({title,description,code,price,status:true,stock,category,thumbnails:"thumbnail"});

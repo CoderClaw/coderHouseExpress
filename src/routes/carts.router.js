@@ -12,7 +12,7 @@ export default router;
 
 router.get('/',async (req, res)=>{
 
-    const carts = await cartModel.find({})
+    const carts = await cartModel.find({}).populate("products.product")
     
     if(req.query.limit){
         res.send(carts.slice(0,parseInt(req.query.limit)))
@@ -22,7 +22,7 @@ router.get('/',async (req, res)=>{
     
 })
 router.get('/:cid',async (req, res)=>{
-    const cart = await cartModel.findOne({_id: req.params.cid})
+    const cart = await cartModel.findOne({_id: req.params.cid}).populate("products.product")
 
     if(cart){
         return res.send(cart.products)
@@ -53,19 +53,19 @@ router.post('/:cid/product/:pid',async (req, res)=>{
         if(!prod){
             return res.status(401).send("product not found")
         }
-        console.log(prod._id.toString())
-        if(!cart.products.find(obj => obj.product === prod._id.toString())){
+        
+        if(!cart.products.find(obj => obj.product.toString() === prod._id.toString())){
             cart.products.push({
-                product: prod._id.toString(),
+                product: pid,
                 quantity: 1
             })
         }else{
-            const selectedCart = cart.products.findIndex(obj => obj.product === prod._id.toString())
+            const selectedCart = cart.products.findIndex(obj => obj.product.toString() === prod._id.toString())
             cart.products[selectedCart].quantity++
         }
         
     
-        const resp = await cartModel.findOneAndUpdate({_id:cid},{products: cart.products});
+        const resp = await cartModel.findByIdAndUpdate({_id:cid},cart);
         res.send(resp)
     }catch(error){
         console.log(error)
@@ -74,14 +74,66 @@ router.post('/:cid/product/:pid',async (req, res)=>{
     
 })
 
-router.put('/',async (req, res)=>{
+router.put('/:cid',async (req, res)=>{
 
+    const {cid} = req.params;
+
+    const cart = await cartModel.findById(cid).lean()
+
+    cart.products = req.body;
+
+    await cartModel.findByIdAndUpdate({_id: cid},cart)
     
+    res.send(cart)
     
 })
 
-router.delete('/',async (req, res)=>{
+router.put('/:cid/products/:pid',async (req, res)=>{
+    const {cid,pid} = req.params;
 
+    const cart = await cartModel.findById(cid).lean()
+
+    if(!cart){
+        res.status(401).send("error, carrito no encontrado")
+    }
     
+    const prodIndex = cart.products.findIndex(prod=>prod.product == pid);
+    if(prodIndex < 0){
+        res.status(401).send("error, producto no encontrado")
+    }
+
+    cart.products[prodIndex].quantity = req.body.quantity;
+
+    await cartModel.findByIdAndUpdate({_id: cid},cart)
+    
+    res.send(cart)
+    
+})
+
+router.delete('/:cid',async (req, res)=>{
+
+    const {cid} = req.params;
+
+    const cart = await cartModel.findById(cid).lean()
+
+    cart.products = []
+
+    await cartModel.findByIdAndUpdate({_id: cid},cart)
+    
+    res.send(cart)
+    
+})
+
+router.delete('/:cid/products/:pid',async (req, res)=>{
+
+    const {cid,pid} = req.params;
+
+    const cart = await cartModel.findById(cid).lean()
+
+    cart.products = cart.products.filter(prod => prod.product != pid)
+
+    await cartModel.findByIdAndUpdate({_id: cid},cart)
+    
+    res.send(cart)
     
 })

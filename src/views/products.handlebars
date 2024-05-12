@@ -1,0 +1,26 @@
+<div class="productContainer">
+    <h1>LISTA DE PRODUCTOS:</h1>
+        <div class="prodContainer">
+            {{#each products.docs}}
+            <div class="prodCard">
+                <h4>Producto: {{this.title}}</h4>
+                <p>Descripción: {{this.description}}</p>
+                <p>Id: {{this._id}}</p>
+                <p>Precio: ${{this.price}}</p>
+                <p>Stock: {{this.stock}}</p>
+                <p>Código del producto: {{this.code}}</p>
+                 <form action="/products" method="post">
+                    <input type="text" name="prodId" value="{{this._id}}" style="display: none;">
+                    <button>Agregar al carrito</button>
+                </form>
+            </div>
+           
+            {{/each}}
+
+        </div>
+        <div class="pagination">
+            <a href="{{respuesta.prevLink}}">prevPage</a>
+            <p>{{respuesta.page}}</p>
+            <a href="{{respuesta.nextLink}}">nextPage</a>
+        </div>
+</div>

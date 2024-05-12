@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { prodModel } from "../dao/models/Prod.js";
+import { cartModel } from "../dao/models/Cart.js";
 import { messageModel } from "../dao/models/Messages.js";
 //import { ProductManager } from "../productManager.js";
 
@@ -18,6 +19,76 @@ router.get('/', async (req, res) => {
     }
 
     res.render('home', {
+        products,
+        nroProducts,
+    })
+}); 
+
+router.get('/products', async (req, res) => {
+
+    let products = {};
+    if(req.query.page){
+        products = await prodModel.paginate({},{lean: true,limit:5,page:req.query.page})
+    }else{
+        products = await prodModel.paginate({},{lean: true,limit:5,page:1})
+    }
+
+    const respuesta = {
+        status: "success",
+        payload: products.docs,
+        totalPages:products.totalDocs,
+        prevPage: products.hasPrevPage ? products.page-1 : null,
+        nextPage: products.hasNextPage ? products.page+1 : null ,
+        page:products.page,
+        hasPrevPage:products.hasPrevPage,
+        hasNextPage:products.hasNextPage,
+        prevLink:products.hasPrevPage ? "http://localhost:8080/products?page=" + (products.page-1) : null ,
+        nextLink:products.hasNextPage ? "http://localhost:8080/products?page=" + (products.page+1) : null ,
+    }
+    
+    res.render('products', {
+        products,
+        respuesta       
+    })
+}); 
+
+router.post('/products', async (req, res) => {
+
+    const {prodId} = req.body
+
+    const cart = await cartModel.findOne({}).lean();
+
+    if(!cart.products.find(obj => obj.product.toString() === prodId)){
+        cart.products.push({
+            product: prodId,
+            quantity: 1
+        })
+    }else{
+        const selectedCart = cart.products.findIndex(obj => obj.product.toString() === prodId)
+        cart.products[selectedCart].quantity++
+    }    
+    
+
+    await cartModel.findOneAndUpdate({_id:cart._id},cart).lean()
+    
+    const newCart = await cartModel.findById(cart._id).populate('products.product').lean();
+   
+    res.render('cart', {
+        prodId,
+        newCart        
+    })
+}); 
+
+router.get('/cart/:cid', async (req, res) => {
+
+    const products = await prodModel.find({}).lean()
+    
+    let nroProducts=0;
+    if(products){
+        nroProducts = products.length
+    }
+
+    res.render('products', {
         products,
         nroProducts,
     })
