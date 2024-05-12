@@ -11,14 +11,22 @@ export default router;
 
 router.get('/',async (req, res)=>{
 
-    const products = await prodModel.find({}).lean();
+    let products = [];
     
     if(req.query.limit){
-        res.send(products.slice(0,parseInt(req.query.limit)))
+        products = await prodModel.find().limit(parseInt(req.query.limit));
+    }else if(req.query.sort){
+        if(req.query.sort === "asc"){
+            products = await prodModel.find().sort({price: 1});
+        }else{
+            products = await prodModel.find().sort({price: -1});
+        }
+        products = await prodModel.find().limit(2);
     }else{
-        res.send(products)
+        products = await prodModel.find({}).lean();
+       
     }
-    
+    res.send(products)
 })
 router.get('/:pid',async (req, res)=>{
     const product = await prodModel.findOne({_id: req.params.pid});

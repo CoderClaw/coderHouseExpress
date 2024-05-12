@@ -6,7 +6,8 @@ const prodSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        unique: false
+        unique: false,
+        index: true
     },
     description: {
         type: String,
@@ -16,7 +17,8 @@ const prodSchema = new mongoose.Schema({
     code: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        index: true
     },
     price: {
         type: Number,
