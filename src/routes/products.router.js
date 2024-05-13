@@ -67,6 +67,8 @@ router.post('/',async (req, res)=>{
 
     const response = await prodModel.create({title,description,code,price,status:true,stock,category,thumbnails:"thumbnail"});
 
+    console.log(response)
+
     if(response){
         res.status(200).send({staus: "success",payload: response}) 
     }else{

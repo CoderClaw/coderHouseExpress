@@ -99,14 +99,15 @@ router.put('/:cid/products/:pid',async (req, res)=>{
     
     const prodIndex = cart.products.findIndex(prod=>prod.product == pid);
     if(prodIndex < 0){
-        res.status(401).send("error, producto no encontrado")
-    }
+        console.log(prodIndex)
+        res.status(401).send("error, producto no encontrado en el carrito seleccionado")
+    }else{
+        cart.products[prodIndex].quantity = req.body.quantity;
 
-    cart.products[prodIndex].quantity = req.body.quantity;
-
-    await cartModel.findByIdAndUpdate({_id: cid},cart)
-    
-    res.send(cart)
+        await cartModel.findByIdAndUpdate({_id: cid},cart)
+        
+        res.send(cart)
+    }   
     
 })
 

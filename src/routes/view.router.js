@@ -80,6 +80,7 @@ router.get('/carts/:cid', async (req, res) => {
 
     const {cid} = req.params; 
     try {
+        
         const newCart = await cartModel.findById({_id:cid}).populate('products.product').lean();   
 
         res.render('cart', {

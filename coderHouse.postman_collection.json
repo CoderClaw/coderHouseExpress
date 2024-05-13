@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"test5\",\r\n    \"description\":\"testDescription\",\r\n    \"code\":999944664,\r\n    \"price\":50,\r\n    \"status\":\"true\",\r\n    \"stock\":20,\r\n    \"category\":\"category\",\r\n    \"thumbnails\":\"thumbnail\"\r\n}",
+							"raw": "{\r\n  \"title\": \"SuperPhone X test\",\r\n  \"description\": \"The latest smartphone with cutting-edge features\",\r\n  \"code\": \"SPX003\",\r\n  \"price\": 799.99,\r\n  \"status\": true,\r\n  \"stock\": 50,\r\n  \"category\": \"Electronics\",\r\n  \"thumbnails\": \"https://example.com/superphone-thumbnail.jpg\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -46,7 +46,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"testPut4\",    \r\n    \"category\":\"categorY\",\r\n    \"thumbnails\":\"thumbnails\"\r\n}",
+							"raw": "{\r\n  \"title\": \"SuperPhone X test update\",\r\n  \"price\": 9.99,\r\n  \"status\": true,\r\n  \"stock\": 5\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -54,7 +54,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/products/663817a6e6b9c152d55c977b",
+							"raw": "http://localhost:8080/api/products/:pid",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -63,7 +63,13 @@
 							"path": [
 								"api",
 								"products",
-								"663817a6e6b9c152d55c977b"
+								":pid"
+							],
+							"variable": [
+								{
+									"key": "pid",
+									"value": "66429c6adcc939560f6c88ae"
+								}
 							]
 						}
 					},
@@ -84,7 +90,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/products/6637d7cd82f10060776e965b",
+							"raw": "http://localhost:8080/api/products/:pid",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -93,7 +99,13 @@
 							"path": [
 								"api",
 								"products",
-								"6637d7cd82f10060776e965b"
+								":pid"
+							],
+							"variable": [
+								{
+									"key": "pid",
+									"value": "66429c6adcc939560f6c88ae"
+								}
 							]
 						}
 					},
@@ -125,7 +137,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/products/6637d7067bb75bc674000756",
+							"raw": "http://localhost:8080/api/products/:pid",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -134,7 +146,13 @@
 							"path": [
 								"api",
 								"products",
-								"6637d7067bb75bc674000756"
+								":pid"
+							],
+							"variable": [
+								{
+									"key": "pid",
+									"value": "66429b822965e3d189f9a75d"
+								}
 							]
 						}
 					},
@@ -160,7 +178,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/carts/6637eb2f6ce2b3a9c79c34b9/product/6637d788d39fb71c9d8b85e3",
+							"raw": "http://localhost:8080/api/carts/:cid/product/:pid",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -169,9 +187,19 @@
 							"path": [
 								"api",
 								"carts",
-								"6637eb2f6ce2b3a9c79c34b9",
+								":cid",
 								"product",
-								"6637d788d39fb71c9d8b85e3"
+								":pid"
+							],
+							"variable": [
+								{
+									"key": "cid",
+									"value": "66414e38854ba1b1bc937d18"
+								},
+								{
+									"key": "pid",
+									"value": "66429b822965e3d189f9a75d"
+								}
 							]
 						}
 					},
@@ -225,7 +253,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/carts/6637eb2f6ce2b3a9c79c34b9",
+							"raw": "http://localhost:8080/api/carts/:cid",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -234,7 +262,169 @@
 							"path": [
 								"api",
 								"carts",
-								"6637eb2f6ce2b3a9c79c34b9"
+								":cid"
+							],
+							"variable": [
+								{
+									"key": "cid",
+									"value": "66429d36dcc939560f6c88b7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add more of a prod",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\" : 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/carts/:cid/products/:pid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"carts",
+								":cid",
+								"products",
+								":pid"
+							],
+							"variable": [
+								{
+									"key": "cid",
+									"value": "66429d36dcc939560f6c88b7"
+								},
+								{
+									"key": "pid",
+									"value": "66429b822965e3d189f9a75d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modify all the products in a cart",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"product\": \"6641336980145a0e20cde834\",\r\n        \"quantity\": 2\r\n    },\r\n    {\r\n        \"product\": \"6641336980145a0e20cde835\",\r\n        \"quantity\": 7\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/carts/:cid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"carts",
+								":cid"
+							],
+							"variable": [
+								{
+									"key": "cid",
+									"value": "66429d35dcc939560f6c88b5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete one product from the cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/carts/:cid/products/:pid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"carts",
+								":cid",
+								"products",
+								":pid"
+							],
+							"variable": [
+								{
+									"key": "cid",
+									"value": "66429d35dcc939560f6c88b5"
+								},
+								{
+									"key": "pid",
+									"value": "6641336980145a0e20cde834"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete all products from the cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/carts/:cid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"carts",
+								":cid"
+							],
+							"variable": [
+								{
+									"key": "cid",
+									"value": "66414e38854ba1b1bc937d18"
+								}
 							]
 						}
 					},
