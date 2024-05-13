@@ -73,25 +73,22 @@ router.post('/products', async (req, res) => {
     
     const newCart = await cartModel.findById(cart._id).populate('products.product').lean();
    
-    res.render('cart', {
-        prodId,
-        newCart        
-    })
+    res.redirect('/carts/'+cart._id)
 }); 
 
-router.get('/cart/:cid', async (req, res) => {
+router.get('/carts/:cid', async (req, res) => {
 
-    const products = await prodModel.find({}).lean()
-    
-    let nroProducts=0;
-    if(products){
-        nroProducts = products.length
+    const {cid} = req.params; 
+    try {
+        const newCart = await cartModel.findById({_id:cid}).populate('products.product').lean();   
+
+        res.render('cart', {
+            newCart
+        })
+    } catch (error) {
+        console.log(error.message)
     }
-
-    res.render('products', {
-        products,
-        nroProducts,
-    })
+    
 }); 
 
 router.get('/realtimeproducts', async (req, res) => {
