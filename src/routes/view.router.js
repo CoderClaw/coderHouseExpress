@@ -2,6 +2,8 @@ import { Router } from "express";
 import { prodModel } from "../dao/models/Prod.js";
 import { cartModel } from "../dao/models/Cart.js";
 import { messageModel } from "../dao/models/Messages.js";
+import { auth } from "../middlewares/auth.middleware.js";
+import { UsersManagerMongo } from "../dao/usersManagerMongo.js";
 //import { ProductManager } from "../productManager.js";
 
 const router = Router();
@@ -18,10 +20,7 @@ router.get('/', async (req, res) => {
         nroProducts = products.length
     }
 
-    res.render('home', {
-        products,
-        nroProducts,
-    })
+    res.redirect("login")
 }); 
 
 router.get('/products', async (req, res) => {
@@ -46,7 +45,21 @@ router.get('/products', async (req, res) => {
         nextLink:products.hasNextPage ? "http://localhost:8080/products?page=" + (products.page+1) : null ,
     }
     
+    const userService =new UsersManagerMongo();
+
+    while(!req.session){
+        console.log("cargando...")
+    }
+
+
+    const user = req.session.user
+    
+    console.log(user)
+
     res.render('products', {
+        user,
+        isAdmin:user.admin,
+        isUsuario: !user.admin,
         products,
         respuesta       
     })
@@ -143,6 +156,28 @@ router.get("/chat", async (req,res)=>{
     })
     res.render('index',{})
 })
-    
+
+//LOGIN
+router.get('/login',(req ,res)=>{
+    res.render('login')
+})
+
+//REGISTER
+router.get('/register',(req ,res)=>{
+    res.render('register')
+})
+
+//USERS
+router.get('/users', auth, async (req ,res)=>{
+
+    const {numPage, limit} = req.query
+
+    const userService = new UsersManagerMongo();
+
+    const {docs, page, hasPrevPage, hasNextPage, prevPage, nextPage} = await userService.getUsers();
+
+    res.render('users',{users:docs, page, hasPrevPage, hasNextPage, prevPage, nextPage})
+})
+
 
 export default router;

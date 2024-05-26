@@ -1,5 +1,18 @@
 <div class="productContainer">
-    <h1>LISTA DE PRODUCTOS:</h1>
+    <h1>Bienvenido {{user.Nombre}} {{user.Apellido}} </h1>
+    <p>Email:  {{user.email}}</p>
+    {{#if isAdmin}}
+    <p>Rol: Administrador</p>
+    {{/if}}
+    {{#if isUsuario}}
+    <p>Rol: Usuario</p>
+    {{/if}}
+    <form action="/api/sessions/logout" method="get" class="form-group w-50">
+        <button class="btn btn-outline-dark w-100">Logout</button>
+    </form>
+
+
+    <h2>LISTA DE PRODUCTOS:</h2>
         <div class="prodContainer">
             {{#each products.docs}}
             <div class="prodCard">

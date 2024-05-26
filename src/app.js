@@ -3,9 +3,15 @@ import { __dirname} from './utils.js';
 import prodRouter from './routes/products.router.js'
 import cartRouter from './routes/carts.router.js'
 import  viewsRouter  from './routes/view.router.js';
+import { sessionsRouter } from './routes/sessions.router.js';
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io';
 import mongoose from 'mongoose'
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+
+
 
 const app = express();
 
@@ -26,6 +32,19 @@ try{
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(__dirname + '/public'));
+app.use(cookieParser("Firma_Secreta"));
+
+
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl:'mongodb+srv://coderhouseProject:noh5tzDPkuzeGwa8@cluster0.nqgyiqu.mongodb.net/ecommerce',
+        ttl:60 * 60 * 1000 * 24
+    }),
+    secret: 'secret',// firmar nuestro session
+    resave: true,
+    saveUninitialized: true
+}));
 
 app.use(getIo(io))
 
@@ -39,7 +58,7 @@ app.use('/', viewsRouter)
 
 app.use('/api/products',prodRouter)
 app.use('/api/carts',cartRouter)
-
+app.use('/api/sessions', sessionsRouter)
 
 
 // io.on('connection',socket => {
